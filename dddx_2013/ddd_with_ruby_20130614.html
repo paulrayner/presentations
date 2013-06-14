@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="generator" content="Asciidoctor 0.1.1">
+    
+    
+    <title>Domain-Driven Design with Ruby</title>
+    
+    
+    
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.min.css">
+     <link rel="stylesheet" href="css/theme/vg_simple.css" id="theme">
+    
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+    <script>
+      document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+    </script>
+  </head>
+  <body class="article">
+    
+    <div id="header">
+      
+      
+    </div>
+    
+      <!-- RevealJS -->
+    <div class="reveal">
+      <div class="slides">
+
+<section>
+
+  
+  <h2 id="_domain_driven_design_with_ruby">Domain-Driven Design with Ruby</h2>
+  
+
+  
+<div class="paragraph">
+    
+  <p><span class="image">
+  <img src="assets/images/240px-Ruby_logo.png" alt="Ruby Logo">
+</span></p>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  
+
+  
+<div class="paragraph">
+    
+  <p><span class="image">
+  <img src="assets/images/business_card.png" alt="Business Card">
+</span></p>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  <h2 id="__learning_never_exhausts_the_mind_leonardo_da_vinci">“Learning never exhausts the mind.” - Leonardo da Vinci</h2>
+  
+
+  
+<div class="paragraph">
+    
+  <p><span class="image">
+  <img src="assets/images/da_vinci.jpg" alt="Da Vinci face">
+</span></p>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  
+
+  
+<div class="paragraph">
+    
+  <p><span class="image">
+  <img src="assets/images/cartoon.jpg" alt="Burlington House Cartoon">
+</span></p>
+</div>
+<div class="paragraph small">
+    
+  <p><em>The Virgin and Child with St Anne and St John the Baptist</em> - Leonardo Da Vinci</p>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  <h2 id="_interesting_questions">Interesting Questions</h2>
+  
+
+  
+<div class="ulist source incremental">
+  
+  <ul>
+  
+    <li class=fragment>
+      <p>How does the choice of Ruby affect the implementation of the DDD building block patterns?</p>
+      
+    </li>
+  
+    <li class=fragment>
+      <p>How well does an opinionated MVC web framework like Rails support doing DDD?</p>
+      
+    </li>
+  
+    <li class=fragment>
+      <p>What are implications of choosing a document store like MongoDB for aggregate design and eventual consistency?</p>
+      
+    </li>
+  
+  </ul>
+</div>
+
+  
+</section>
+
+
+<section>
+   <section>
+  
+  <h2 id="_ddd_sample_app">DDD Sample App</h2>
+  
+   </section>
+  
+
+<section>
+
+  
+  
+
+  
+<div class="paragraph">
+    
+  <p><span class="image">
+  <img src="assets/images/containership.jpeg" alt="Container ship">
+</span></p>
+</div>
+<div class="paragraph small">
+    
+  <p><em>Image courtesy of FreeFoto.com</em></p>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  <h3 id="_ddd_sample_application">DDD Sample Application</h3>
+  
+
+  
+<div class="ulist source incremental">
+  
+  <ul>
+  
+    <li class=fragment>
+      <p>2009 - <a href="https://github.com/patrikfr/dddsample">Java 1.1.0 release</a></p>
+      
+    </li>
+  
+    <li class=fragment>
+      <p>2010/2011 - <a href="https://github.com/SzymonPobiega/DDDSample.Net">DDDSample.NET - C# Port</a></p>
+      
+    </li>
+  
+    <li class=fragment>
+      <p>2013 - <a href="https://github.com/paulrayner/ddd_sample_app_ruby">Ruby port</a> - based on Java &amp; C#</p>
+      
+    </li>
+  
+  </ul>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  <h3 id="_why_ruby">Why Ruby?</h3>
+  
+
+  
+
+  
+</section>
+
+
+<section>
+
+  
+  <h3 id="_why_em_not_em_ruby">Why <em>not</em> Ruby?</h3>
+  
+
+  
+<div class="ulist source incremental">
+  
+  <ul>
+  
+    <li class=fragment>
+      <p>Growing interest in design patterns and DDD in Ruby community</p>
+      
+    </li>
+  
+    <li class=fragment>
+      <p>Rich OSS ecosystem and vibrant agile development community</p>
+      
+    </li>
+  
+    <li class=fragment>
+      <p>Many talented modelers and designers, with a need to move beyond simple MVC and ActiveRecord in Rails</p>
+      
+    </li>
+  
+  </ul>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  <h3 id="_why_me">Why Me?</h3>
+  
+
+  
+<div class="ulist source incremental">
+  
+  <ul>
+  
+    <li class=fragment>
+      <p>Background in DDD, not Ruby</p>
+      
+    </li>
+  
+    <li class=fragment>
+      <p>Certified DDD instructor for <a href="http://domainlanguage.com/about">Domain Language</a></p>
+      
+    </li>
+  
+    <li class=fragment>
+      <p>Goal: master Ruby in 2013</p>
+      
+    </li>
+  
+    <li class=fragment>
+      <p>Rails development for a Denver non-profit</p>
+      
+    </li>
+  
+    <li class=fragment>
+      <p>Author of Guard::AsciiDoc Gem</p>
+      
+    </li>
+  
+  </ul>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  
+
+  
+<div class="paragraph">
+    
+  <p><span class="image">
+  <img src="assets/images/context_map.jpg" alt="Context Map">
+</span></p>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  <h3 id="_demo">Demo</h3>
+  
+
+  
+
+  
+</section>
+
+
+<section>
+
+  
+  
+
+  
+<video controls autoplay src="assets/videos/cargo_tracking.mp4"></video>
+  
+</section>
+
+
+<section>
+
+  
+  <h3 id="_modeled_as_4_aggregates">Modeled as 4 Aggregates</h3>
+  
+
+  
+<div class="ulist source incremental">
+  
+  <ul>
+  
+    <li class=fragment>
+      <p>Cargo</p>
+      
+    </li>
+  
+    <li class=fragment>
+      <p>HandlingEvent</p>
+      
+    </li>
+  
+    <li class=fragment>
+      <p>Location</p>
+      
+    </li>
+  
+    <li class=fragment>
+      <p>Voyage</p>
+      
+    </li>
+  
+  </ul>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  
+
+  
+<div class="paragraph">
+    
+  <p><span class="image">
+  <img src="assets/images/cargo.png" alt="Cargo Aggregate">
+</span></p>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  
+
+  
+<div class="paragraph">
+    
+  <p><span class="image">
+  <img src="assets/images/handling_event.png" alt="Handling Event Aggregate">
+</span></p>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  
+
+  
+<div class="paragraph">
+    
+  <p><span class="image">
+  <img src="assets/images/location.png" alt="Location Aggregate">
+</span></p>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  
+
+  
+<div class="paragraph">
+    
+  <p><span class="image">
+  <img src="assets/images/voyage.png" alt="Voyage Aggregate">
+</span></p>
+</div>
+
+  
+</section>
+
+
+  
+</section>
+
+
+<section>
+   <section>
+  
+  <h2 id="_goal_idiomatic_ruby_port">Goal: Idiomatic Ruby port</h2>
+  
+   </section>
+  
+
+<section>
+
+  
+  <h3 id="_domain_model_plain_ruby_objects">Domain Model - Plain Ruby Objects</h3>
+  
+
+  
+<div class="listingblock">
+  <div class="title">domain/cargo/delivery.rb</div>
+  <div class="content monospaced">
+    
+    <pre class="highlight"><code class="ruby">class Delivery
+  attr_reader :transport_status
+  attr_reader :last_known_location
+  attr_reader :is_misdirected
+  attr_reader :eta
+  attr_reader :is_unloaded_at_destination
+  attr_reader :routing_status
+  attr_reader :calculated_at
+  attr_reader :last_handling_event
+  attr_reader :next_expected_activity
+
+  class InitializationError &lt; RuntimeError; end
+
+  def initialize(route_specification, itinerary, last_handling_event)
+    raise InitializationError unless route_specification
+
+    @last_handling_event = last_handling_event
+    @routing_status = calculate_routing_status(itinerary, route_specification)
+    @transport_status = calculate_transport_status(last_handling_event)
+    @last_known_location = calculate_last_known_location(last_handling_event)
+    @is_misdirected = calculate_misdirection_status(last_handling_event, itinerary)
+    @is_unloaded_at_destination = calculate_unloaded_at_destination(last_handling_event, route_specification)
+    @eta = calculate_eta(itinerary)
+    @next_expected_activity = calculate_next_expected_activity(last_handling_event, route_specification, itinerary)
+    @calculated_at = DateTime.now</code></pre>
+    
+  </div>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  <h3 id="_rspec_based_unit_tests">RSpec-based Unit Tests</h3>
+  
+
+  
+<div class="listingblock">
+  
+  <div class="content monospaced">
+    
+    <pre class="highlight"><code>ddd_sample_app_ruby$ rspec spec/domain/delivery_spec.rb
+
+Delivery
+  Cargo has no next expected activity when not on track
+  Cargo transport status is claimed when the last recorded handling event is a claim
+  Cargo is misdirected when the last recorded handling event does not match the itinerary
+  Cargo has next expected activity of load at origin when when the last recorded handling event is a receive
+...
+
+Finished in 0.14528 seconds
+29 examples, 0 failures</code></pre>
+    
+  </div>
+</div>
+
+  
+</section>
+
+
+  
+</section>
+
+
+<section>
+   <section>
+  
+  <h2 id="_value_objects">Value Objects</h2>
+  
+   </section>
+  
+
+<section>
+
+  
+  <h3 id="_deep_freeze">Deep Freeze!</h3>
+  
+
+  
+<div class="paragraph">
+    
+  <p>Using <a href="https://rubygems.org/gems/ice_nine">Ice Nine</a>. As currently implemented in <code>Leg</code>:</p>
+</div>
+<div class="listingblock">
+  
+  <div class="content monospaced">
+    
+    <pre class="highlight"><code>def initialize(voyage, load_location, load_date, unload_location, unload_date)
+  @voyage = voyage
+  @load_location = load_location
+  @unload_location = unload_location
+  @load_date = load_date
+  @unload_date = unload_date
+
+  IceNine.deep_freeze(self)
+end</code></pre>
+    
+  </div>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  <h3 id="_equality">Equality</h3>
+  
+
+  
+<div class="paragraph">
+    
+  <p>As currently implemented in <code>Leg</code>:</p>
+</div>
+<div class="listingblock">
+  
+  <div class="content monospaced">
+    
+    <pre class="highlight"><code>def ==(other)
+  self.voyage == voyage &amp;&amp;
+  self.load_location == load_location &amp;&amp;
+  self.unload_location == unload_location &amp;&amp;
+  self.load_date == load_date &amp;&amp;
+  self.unload_date == unload_date
+end</code></pre>
+    
+  </div>
+</div>
+
+  
+</section>
+
+
+  
+</section>
+
+
+<section>
+   <section>
+  
+  <h2 id="_rails_based_stack">Rails-Based Stack</h2>
+  
+   </section>
+  
+
+<section>
+
+  
+  
+
+  
+<div class="paragraph">
+    
+  <p><span class="image">
+  <img src="assets/images/rails.png" alt="Rails">
+</span></p>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  <h3 id="_rails_based_stack_3">Rails-Based Stack</h3>
+  
+
+  
+<div class="ulist source incremental">
+  
+  <ul>
+  
+    <li class=fragment>
+      <p>DDD favors <a href="http://martinfowler.com/eaaCatalog/repository.html">Repository pattern</a></p>
+      
+    </li>
+  
+    <li class=fragment>
+      <p>Rails implements <a href="http://www.martinfowler.com/eaaCatalog/activeRecord.html">ActiveRecord</a> pattern</p>
+      
+    </li>
+  
+    <li class=fragment>
+      <p>Repository vs ActiveRecord - Fight!</p>
+      
+    </li>
+  
+  </ul>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  
+
+  
+<div class="paragraph">
+    
+  <p><span class="image">
+  <img src="assets/images/rails_folder_app.png" alt="Rails Folders App">
+</span></p>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  
+
+  
+<div class="paragraph">
+    
+  <p><span class="image">
+  <img src="assets/images/rails_folders.png" alt="Rails Folders">
+</span></p>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  
+
+  
+<div class="paragraph">
+    
+  <p><span class="image">
+  <img src="assets/images/rails_ports_folder.png" alt="Rails Ports Folder">
+</span></p>
+</div>
+
+  
+</section>
+
+
+  
+</section>
+
+
+<section>
+   <section>
+  
+  <h2 id="_mongodb_aggregate_oriented_datastore">MongoDB - Aggregate-Oriented Datastore</h2>
+  
+   </section>
+  
+
+<section>
+
+  
+  
+
+  
+<div class="paragraph">
+    
+  <p><span class="image">
+  <img src="assets/images/mongodb.png" alt="MongoDB Logo">
+</span></p>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  <h3 id="_cargo_document_in_mongodb">Cargo Document in MongoDB</h3>
+  
+
+  
+<div class="listingblock">
+  <div class="title">db.cargo.find()</div>
+  <div class="content monospaced">
+    
+    <pre class="highlight"><code class="JSON">{
+   "_id":ObjectId("51b6a44773fe874a9a00002c"),
+   "tracking_id":"cargo_1234",
+   "origin_code":"CNHKG",
+   "origin_name":"Hongkong",
+   "destination_code":"USDAL",
+   "destination_name":"Dallas",
+   "arrival_deadline":   ISODate("2013-07-01T00:00:00   Z"),
+   "last_handling_event_id":"7d690ace-d24d-11e2-9753-080027129698",
+   "leg_documents":[
+      {
+         "_id":ObjectId("51b6a44773fe874a9a00002d"),
+         "voyage":"Voyage ABC",
+         "load_location_code":"CNHKG",
+         "load_location_name":"Hongkong",
+         "unload_location_code":"USLGB",
+         "unload_location_name":"Long Beach",
+         "load_date":         ISODate("2013-06-14T00:00:00         Z"),
+         "unload_date":         ISODate("2013-06-19T00:00:00         Z")
+      },
+      {
+         "_id":ObjectId("51b6a44773fe874a9a00002e"),
+         "voyage":"Voyage DEF",
+         "load_location_code":"USLGB",
+         "load_location_name":"Long Beach",
+         "unload_location_code":"USDAL",
+         "unload_location_name":"Dallas",
+         "load_date":         ISODate("2013-06-21T00:00:00         Z"),
+         "unload_date":         ISODate("2013-06-24T00:00:00         Z")
+      }
+   ]
+}</code></pre>
+    
+  </div>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  <h3 id="_cargo_inspection_service">Cargo Inspection Service</h3>
+  
+
+  
+<div class="listingblock">
+  <div class="title">app/controllers/cargo_inspection_service.rb</div>
+  <div class="content monospaced">
+    
+    <pre class="highlight"><code class="ruby">class CargoInspectionService
+  def cargo_was_handled(tracking_id, last_handling_event)
+    cargo_repository = CargoRepository.new
+    cargo = cargo_repository.find_by_tracking_id(tracking_id)
+    cargo.derive_delivery_progress(last_handling_event)
+    cargo_repository.store(cargo)
+  end
+end</code></pre>
+    
+  </div>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  <h3 id="_mongoid_remove_all_references_to_code_activerecord_code_from_rails">Mongoid - Remove all references to <code>ActiveRecord</code> from Rails</h3>
+  
+
+  
+<div class="paragraph">
+    
+  <p><span class="image">
+  <img src="assets/images/mongoid-logo.png" alt="Mongoid">
+</span></p>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  <h3 id="_cargo_repository">Cargo Repository</h3>
+  
+
+  
+<div class="listingblock">
+  <div class="title">ports/persistence/mongodb_adaptor/cargo_repository.rb</div>
+  <div class="content monospaced">
+    
+    <pre class="highlight"><code class="ruby">  def find_by_tracking_id(tracking_id)
+    cargo_doc = CargoDocument.find_by(tracking_id: tracking_id.id)
+    CargoDocumentAdaptor.new.transform_to_cargo(cargo_doc)
+  end</code></pre>
+    
+  </div>
+</div>
+
+  
+</section>
+
+
+  
+</section>
+
+
+<section>
+   <section>
+  
+  <h2 id="_eventual_consistency_between_aggregates">Eventual Consistency Between Aggregates</h2>
+  
+   </section>
+  
+
+<section>
+
+  
+  
+
+  
+<div class="paragraph">
+    
+  <p><span class="image">
+  <img src="assets/images/celluloid.png" alt="Celluloid">
+</span></p>
+</div>
+<div class="ulist source incremental">
+  
+  <ul>
+  
+    <li class=fragment>
+      <p>Actor-based concurrent object framework for Ruby</p>
+      
+    </li>
+  
+    <li class=fragment>
+      <p><a href="https://github.com/celluloid/celluloid">https://github.com/celluloid/celluloid</a></p>
+      
+    </li>
+  
+  </ul>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  <h3 id="_registering_handling_events">Registering Handling Events</h3>
+  
+
+  
+<div class="listingblock">
+  <div class="title">app/controllers/handling_event_registation.rb</div>
+  <div class="content monospaced">
+    
+    <pre class="highlight"><code class="ruby">class HandlingEventRegistration
+  include Wisper::Publisher
+
+  def handle(register_handling_event)
+  # code to process register_handling_event command goes here...
+  end</code></pre>
+    
+  </div>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  <h3 id="_publish_that_cargo_was_handled">Publish that Cargo Was Handled</h3>
+  
+
+  
+<div class="listingblock">
+  <div class="title">app/controllers/handling_event_registation.rb</div>
+  <div class="content monospaced">
+    
+    <pre class="highlight"><code class="ruby">    # inside handle(register_handling_event)...
+
+    handling_event = HandlingEvent.new(event_type, location, registration_date, completion_date, tracking_id, HandlingEvent.new_id)
+
+    handling_event_repository = HandlingEventRepository.new
+    handling_event_repository.store(handling_event)
+
+    publish(:cargo_was_handled, tracking_id, handling_event)</code></pre>
+    
+  </div>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  <h3 id="_cargo_inspection_service_2">Cargo Inspection Service</h3>
+  
+
+  
+<div class="listingblock">
+  <div class="title">app/controllers/cargo_inspection_service.rb</div>
+  <div class="content monospaced">
+    
+    <pre class="highlight"><code class="ruby">class CargoInspectionService
+  def cargo_was_handled(tracking_id, last_handling_event)
+    cargo_repository = CargoRepository.new
+    cargo = cargo_repository.find_by_tracking_id(tracking_id)
+    cargo.derive_delivery_progress(last_handling_event)
+    cargo_repository.store(cargo)
+  end
+end</code></pre>
+    
+  </div>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  <h3 id="_async_aggregate_updates">Async Aggregate Updates</h3>
+  
+
+  
+<div class="listingblock">
+  <div class="title">config/initializers/loader.rb</div>
+  <div class="content monospaced">
+    
+    <pre class="highlight"><code class="ruby"># Subscribe cargo inspection service to handling event registrations
+Wisper::GlobalListeners.add_listener(CargoInspectionService.new, :async =&gt; true)</code></pre>
+    
+  </div>
+</div>
+
+  
+</section>
+
+
+  
+</section>
+
+
+<section>
+   <section>
+  
+  <h2 id="_extending_the_model">Extending the Model</h2>
+  
+   </section>
+  
+
+<section>
+
+  
+  <h3 id="_cargo_inspection_service_3">Cargo Inspection Service</h3>
+  
+
+  
+<div class="listingblock">
+  <div class="title">app/controllers/cargo_inspection_service.rb</div>
+  <div class="content monospaced">
+    
+    <pre class="highlight"><code class="ruby">class CargoInspectionService
+  def cargo_was_handled(tracking_id, last_handling_event)
+    cargo_repository = CargoRepository.new
+    cargo = cargo_repository.find_by_tracking_id(tracking_id)
+    cargo.derive_delivery_progress(last_handling_event)
+    cargo_repository.store(cargo)
+  end
+end</code></pre>
+    
+  </div>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  <h3 id="_cargo_misdirected_amp_unloaded_at_destination">Cargo Misdirected &amp; Unloaded at Destination</h3>
+  
+
+  
+
+  
+</section>
+
+
+<section>
+
+  
+  <h3 id="_make_it_a_publisher">Make it a Publisher</h3>
+  
+
+  
+<div class="listingblock">
+  <div class="title">app/controllers/cargo_inspection_service.rb</div>
+  <div class="content monospaced">
+    
+    <pre class="highlight"><code class="ruby">class CargoInspectionService
+  include Wisper::Publisher</code></pre>
+    
+  </div>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  
+
+  
+<div class="listingblock">
+  <div class="title">app/controllers/cargo_inspection_service.rb</div>
+  <div class="content monospaced">
+    
+    <pre class="highlight"><code class="ruby">class CargoInspectionService
+  include Wisper::Publisher
+
+  def cargo_was_handled(tracking_id, last_handling_event)
+    cargo_repository = CargoRepository.new
+    cargo = cargo_repository.find_by_tracking_id(tracking_id)
+    cargo.derive_delivery_progress(last_handling_event)
+    # Publish when cargo misdirected or unloaded at destination
+    publish(:cargo_is_misdirected, tracking_id) if cargo.delivery.is_misdirected
+    publish(:cargo_is_unloaded_at_destination, tracking_id) if cargo.delivery.is_unloaded_at_destination
+    cargo_repository.store(cargo)
+  end
+end</code></pre>
+    
+  </div>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  <h3 id="_new_methods">New Methods</h3>
+  
+
+  
+<div class="listingblock">
+  <div class="title">app/controllers/cargo_inspection_service.rb</div>
+  <div class="content monospaced">
+    
+    <pre class="highlight"><code class="ruby">class CargoInspectionService
+  include Wisper::Publisher
+
+  def cargo_was_handled(tracking_id, last_handling_event)
+    cargo_repository = CargoRepository.new
+    cargo = cargo_repository.find_by_tracking_id(tracking_id)
+    cargo.derive_delivery_progress(last_handling_event)
+    publish(:cargo_is_misdirected, tracking_id) if cargo.delivery.is_misdirected
+    publish(:cargo_is_unloaded_at_destination, tracking_id) if cargo.delivery.is_unloaded_at_destination
+    cargo_repository.store(cargo)
+  end
+
+  # New methods...
+  def cargo_is_misdirected(tracking_id)
+    puts "Cargo is misdirected - need to reroute it! ", tracking_id.inspect
+  end
+
+  def is_unloaded_at_destination(tracking_id)
+    puts "Cargo has arrived at the destination - notify the customer.", tracking_id.inspect
+  end
+end</code></pre>
+    
+  </div>
+</div>
+
+  
+</section>
+
+
+  
+</section>
+
+
+<section>
+   <section>
+  
+  <h2 id="_some_lessons_learned">Some Lessons Learned</h2>
+  
+   </section>
+  
+
+<section>
+
+  
+  <h3 id="_ddd_in_a_dynamic_language_is_a_nice_fit_more_exploration_to_be_done_with_value_objects_amp_repositories">DDD in a dynamic language is a nice fit, more exploration to be done with value objects &amp; repositories</h3>
+  
+
+  
+
+  
+</section>
+
+
+<section>
+
+  
+  <h3 id="_mongodb_provides_very_natural_aggregate_modeling_amp_persistence">MongoDB provides very natural aggregate modeling &amp; persistence</h3>
+  
+
+  
+
+  
+</section>
+
+
+<section>
+
+  
+  <h3 id="_actor_based_model_used_by_celluloid_provides_an_elegant_asynchronous_aggregate_update_mechanism">Actor-based model used by Celluloid provides an elegant asynchronous aggregate update mechanism</h3>
+  
+
+  
+
+  
+</section>
+
+
+<section>
+
+  
+  <h3 id="_learning_in_public">Learning in public</h3>
+  
+
+  
+<div class="ulist source incremental">
+  
+  <ul>
+  
+    <li class=fragment>
+      <p><a href="https://github.com/paulrayner/ddd_sample_app_ruby">https://github.com/paulrayner/ddd_sample_app_ruby</a> - see README for resources</p>
+      
+    </li>
+  
+  </ul>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  <h3 id="_thanks_for_expertise">Thanks for Expertise</h3>
+  
+
+  
+<div class="ulist source incremental">
+  
+  <ul>
+  
+    <li class=fragment>
+      <p><a href="https://github.com/cavalle/banksimplistic">BankSimplistic - CQRS on Rails sample app</a></p>
+      
+    </li>
+  
+    <li class=fragment>
+      <p>DDD Sample App - Eric Evans, Peter Backlund, Szymon Pobiega, Patrik Fredriksson</p>
+      
+    </li>
+  
+    <li class=fragment>
+      <p>Ruby &amp; Rails - Dan Sharp</p>
+      
+    </li>
+  
+    <li class=fragment>
+      <p><a href="http://www.meetup.com/ddd-denver">DDD Denver</a></p>
+      
+    </li>
+  
+  </ul>
+</div>
+
+  
+</section>
+
+
+  
+</section>
+
+
+<section>
+
+  
+  
+
+  
+<div class="paragraph">
+    
+  <p><span class="image">
+  <img src="assets/images/vg_logo_square.png" alt="Company Logo">
+</span></p>
+</div>
+
+  
+</section>
+
+
+<section>
+
+  
+  <h2 id="_thank_you">Thank You</h2>
+  
+
+  
+<div class="paragraph">
+    
+  <p><span class="image">
+  <img src="assets/images/business_card.png" alt="Business Card">
+</span></p>
+</div>
+
+  
+</section>
+
+
+
+<!--    <div id="footer">
+      <div id="footer-text">
+        
+        Last updated 2013-06-14 11:12:52 BST
+      </div>
+    </div>-->
+      <!-- RevealJS -->
+      </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.min.js"></script>
+
+    <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+          // { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+        ]
+      });
+
+    </script>
+
+  </body>
+</html>

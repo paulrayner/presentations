@@ -1,0 +1,463 @@
+:author:    Paul Rayner
+:email:     paul@virtual-genius.com
+:revdate:   June 14, 2013
+:style:     source
+:theme:     vg_simple
+
+== Domain-Driven Design with Ruby
+
+image:assets/images/240px-Ruby_logo.png[Ruby Logo]
+
+[role="hide"]
+== Paul Rayner
+
+image:assets/images/business_card.png[Business Card]
+
+== “Learning never exhausts the mind.” - Leonardo da Vinci
+
+image:assets/images/da_vinci.jpg[Da Vinci face]
+
+[role="hide"]
+== Burlington House Cartoon
+
+image:assets/images/cartoon.jpg[Burlington House Cartoon]
+
+[role="small"]
+_The Virgin and Child with St Anne and St John the Baptist_ - Leonardo Da Vinci
+
+== Interesting Questions
+
+[role="incremental"]
+* How does the choice of Ruby affect the implementation of the DDD building block patterns? 
+* How well does an opinionated MVC web framework like Rails support doing DDD? 
+* What are implications of choosing a document store like MongoDB for aggregate design and eventual consistency?
+
+[role="vertical"]
+== DDD Sample App
+
+[role="hide"]
+=== Background on Sample App
+
+image:assets/images/containership.jpeg[Container ship]
+
+[role="small"]
+_Image courtesy of FreeFoto.com_
+
+=== DDD Sample Application
+
+[role="incremental"]
+* 2009 - link:https://github.com/patrikfr/dddsample[Java 1.1.0 release]
+* 2010/2011 - link:https://github.com/SzymonPobiega/DDDSample.Net[DDDSample.NET - C# Port]
+* 2013 - https://github.com/paulrayner/ddd_sample_app_ruby[Ruby port] - based on Java & C#
+
+=== Why Ruby?
+
+=== Why __not__ Ruby?
+
+[role="incremental"]
+* Growing interest in design patterns and DDD in Ruby community
+* Rich OSS ecosystem and vibrant agile development community
+* Many talented modelers and designers, with a need to move beyond simple MVC and ActiveRecord in Rails
+
+=== Why Me?
+
+[role="incremental"]
+* Background in DDD, not Ruby
+* Certified DDD instructor for http://domainlanguage.com/about[Domain Language]
+* Goal: master Ruby in 2013
+* Rails development for a Denver non-profit
+* Author of Guard::AsciiDoc Gem
+
+[role="hide"]
+=== Context Map
+image:assets/images/context_map.jpg[Context Map]
+
+=== Demo
+
+[role="hide"]
+=== Demo
+
+++++
+<video controls autoplay src="assets/videos/cargo_tracking.mp4"></video>
+++++
+
+=== Modeled as 4 Aggregates
+
+[role="incremental"]
+* Cargo
+* HandlingEvent
+* Location
+* Voyage
+
+[role="hide"]
+=== Cargo Aggregate
+image:assets/images/cargo.png[Cargo Aggregate]
+
+[role="hide"]
+=== Handling Event Aggregate
+image:assets/images/handling_event.png[Handling Event Aggregate]
+
+[role="hide"]
+=== Location Aggregate
+image:assets/images/location.png[Location Aggregate]
+
+[role="hide"]
+=== Voyage Aggregate
+image:assets/images/voyage.png[Voyage Aggregate]
+
+[role="vertical"]
+== Goal: Idiomatic Ruby port
+
+=== Domain Model - Plain Ruby Objects
+
+[source,ruby]
+.domain/cargo/delivery.rb
+----
+class Delivery
+  attr_reader :transport_status
+  attr_reader :last_known_location
+  attr_reader :is_misdirected
+  attr_reader :eta
+  attr_reader :is_unloaded_at_destination
+  attr_reader :routing_status
+  attr_reader :calculated_at
+  attr_reader :last_handling_event
+  attr_reader :next_expected_activity
+
+  class InitializationError < RuntimeError; end
+
+  def initialize(route_specification, itinerary, last_handling_event)
+    raise InitializationError unless route_specification
+
+    @last_handling_event = last_handling_event
+    @routing_status = calculate_routing_status(itinerary, route_specification)
+    @transport_status = calculate_transport_status(last_handling_event)
+    @last_known_location = calculate_last_known_location(last_handling_event)
+    @is_misdirected = calculate_misdirection_status(last_handling_event, itinerary)
+    @is_unloaded_at_destination = calculate_unloaded_at_destination(last_handling_event, route_specification)
+    @eta = calculate_eta(itinerary)
+    @next_expected_activity = calculate_next_expected_activity(last_handling_event, route_specification, itinerary)
+    @calculated_at = DateTime.now
+----
+=== RSpec-based Unit Tests
+
+----
+ddd_sample_app_ruby$ rspec spec/domain/delivery_spec.rb
+
+Delivery
+  Cargo has no next expected activity when not on track
+  Cargo transport status is claimed when the last recorded handling event is a claim
+  Cargo is misdirected when the last recorded handling event does not match the itinerary
+  Cargo has next expected activity of load at origin when when the last recorded handling event is a receive
+...
+
+Finished in 0.14528 seconds
+29 examples, 0 failures
+----
+
+[role="vertical"]
+== Value Objects
+
+=== Deep Freeze!
+
+Using https://rubygems.org/gems/ice_nine[Ice Nine]. As currently implemented in `Leg`:
+
+```
+def initialize(voyage, load_location, load_date, unload_location, unload_date)
+  @voyage = voyage
+  @load_location = load_location
+  @unload_location = unload_location
+  @load_date = load_date
+  @unload_date = unload_date
+
+  IceNine.deep_freeze(self)
+end
+```
+
+=== Equality
+
+As currently implemented in `Leg`:
+
+```
+def ==(other)
+  self.voyage == voyage &&
+  self.load_location == load_location &&
+  self.unload_location == unload_location &&
+  self.load_date == load_date &&
+  self.unload_date == unload_date
+end
+```
+
+[role="vertical"]
+== Rails-Based Stack
+
+[role="hide"]
+=== Rails-Based Stack
+image:assets/images/rails.png[Rails]
+
+=== Rails-Based Stack
+
+[role="incremental"]
+* DDD favors http://martinfowler.com/eaaCatalog/repository.html[Repository pattern]
+* Rails implements http://www.martinfowler.com/eaaCatalog/activeRecord.html[ActiveRecord] pattern
+* Repository vs ActiveRecord - Fight!
+
+[role="hide"]
+=== Rails App Folder Structure
+image:assets/images/rails_folder_app.png[Rails Folders App]
+
+[role="hide"]
+=== Rails Folder Structure
+image:assets/images/rails_folders.png[Rails Folders]
+
+[role="hide"]
+=== Rails Ports Folder Structure
+image:assets/images/rails_ports_folder.png[Rails Ports Folder]
+
+[role="vertical"]
+== MongoDB - Aggregate-Oriented Datastore
+
+[role="hide"]
+=== MongoDB - Aggregate-Oriented Datastore
+image:assets/images/mongodb.png[MongoDB Logo]
+
+=== Cargo Document in MongoDB
+
+[source,JSON]
+.db.cargo.find()
+----
+{
+   "_id":ObjectId("51b6a44773fe874a9a00002c"),
+   "tracking_id":"cargo_1234",
+   "origin_code":"CNHKG",
+   "origin_name":"Hongkong",
+   "destination_code":"USDAL",
+   "destination_name":"Dallas",
+   "arrival_deadline":   ISODate("2013-07-01T00:00:00   Z"),
+   "last_handling_event_id":"7d690ace-d24d-11e2-9753-080027129698",
+   "leg_documents":[
+      {
+         "_id":ObjectId("51b6a44773fe874a9a00002d"),
+         "voyage":"Voyage ABC",
+         "load_location_code":"CNHKG",
+         "load_location_name":"Hongkong",
+         "unload_location_code":"USLGB",
+         "unload_location_name":"Long Beach",
+         "load_date":         ISODate("2013-06-14T00:00:00         Z"),
+         "unload_date":         ISODate("2013-06-19T00:00:00         Z")
+      },
+      {
+         "_id":ObjectId("51b6a44773fe874a9a00002e"),
+         "voyage":"Voyage DEF",
+         "load_location_code":"USLGB",
+         "load_location_name":"Long Beach",
+         "unload_location_code":"USDAL",
+         "unload_location_name":"Dallas",
+         "load_date":         ISODate("2013-06-21T00:00:00         Z"),
+         "unload_date":         ISODate("2013-06-24T00:00:00         Z")
+      }
+   ]
+}
+----
+
+=== Cargo Inspection Service
+
+[source,ruby]
+.app/controllers/cargo_inspection_service.rb
+----
+class CargoInspectionService
+  def cargo_was_handled(tracking_id, last_handling_event)
+    cargo_repository = CargoRepository.new
+    cargo = cargo_repository.find_by_tracking_id(tracking_id)
+    cargo.derive_delivery_progress(last_handling_event)
+    cargo_repository.store(cargo)
+  end
+end
+----
+
+=== Mongoid - Remove all references to `ActiveRecord` from Rails
+
+image:assets/images/mongoid-logo.png[Mongoid]
+
+=== Cargo Repository
+
+[source,ruby]
+.ports/persistence/mongodb_adaptor/cargo_repository.rb
+----
+  def find_by_tracking_id(tracking_id)
+    cargo_doc = CargoDocument.find_by(tracking_id: tracking_id.id)
+    CargoDocumentAdaptor.new.transform_to_cargo(cargo_doc)
+  end
+----
+[role="vertical"]
+== Eventual Consistency Between Aggregates
+
+[role="hide"]
+=== Celluloid
+
+image:assets/images/celluloid.png[Celluloid]
+
+[role="incremental"]
+* Actor-based concurrent object framework for Ruby
+* https://github.com/celluloid/celluloid
+
+=== Registering Handling Events
+
+[source,ruby]
+.app/controllers/handling_event_registation.rb
+----
+class HandlingEventRegistration
+  include Wisper::Publisher
+
+  def handle(register_handling_event)
+  # code to process register_handling_event command goes here...
+  end
+----
+
+=== Publish that Cargo Was Handled
+
+[source,ruby]
+.app/controllers/handling_event_registation.rb
+----
+    # inside handle(register_handling_event)...
+
+    handling_event = HandlingEvent.new(event_type, location, registration_date, completion_date, tracking_id, HandlingEvent.new_id)
+
+    handling_event_repository = HandlingEventRepository.new
+    handling_event_repository.store(handling_event)
+
+    publish(:cargo_was_handled, tracking_id, handling_event)
+----
+
+=== Cargo Inspection Service
+
+[source,ruby]
+.app/controllers/cargo_inspection_service.rb
+----
+class CargoInspectionService
+  def cargo_was_handled(tracking_id, last_handling_event)
+    cargo_repository = CargoRepository.new
+    cargo = cargo_repository.find_by_tracking_id(tracking_id)
+    cargo.derive_delivery_progress(last_handling_event)
+    cargo_repository.store(cargo)
+  end
+end
+----
+
+=== Async Aggregate Updates
+
+[source,ruby]
+.config/initializers/loader.rb
+----
+# Subscribe cargo inspection service to handling event registrations
+Wisper::GlobalListeners.add_listener(CargoInspectionService.new, :async => true)
+----
+
+[role="vertical"]
+== Extending the Model
+
+=== Cargo Inspection Service
+
+[source,ruby]
+.app/controllers/cargo_inspection_service.rb
+----
+class CargoInspectionService
+  def cargo_was_handled(tracking_id, last_handling_event)
+    cargo_repository = CargoRepository.new
+    cargo = cargo_repository.find_by_tracking_id(tracking_id)
+    cargo.derive_delivery_progress(last_handling_event)
+    cargo_repository.store(cargo)
+  end
+end
+----
+
+=== Cargo Misdirected & Unloaded at Destination
+
+=== Make it a Publisher
+
+[source,ruby]
+.app/controllers/cargo_inspection_service.rb
+----
+class CargoInspectionService
+  include Wisper::Publisher
+----
+
+[role="hide"]
+=== Misdirected, Unloaded at Destination
+
+[source,ruby]
+.app/controllers/cargo_inspection_service.rb
+----
+class CargoInspectionService
+  include Wisper::Publisher
+
+  def cargo_was_handled(tracking_id, last_handling_event)
+    cargo_repository = CargoRepository.new
+    cargo = cargo_repository.find_by_tracking_id(tracking_id)
+    cargo.derive_delivery_progress(last_handling_event)
+    # Publish when cargo misdirected or unloaded at destination
+    publish(:cargo_is_misdirected, tracking_id) if cargo.delivery.is_misdirected 
+    publish(:cargo_is_unloaded_at_destination, tracking_id) if cargo.delivery.is_unloaded_at_destination
+    cargo_repository.store(cargo)
+  end
+end
+----
+
+=== New Methods
+
+[source,ruby]
+.app/controllers/cargo_inspection_service.rb
+----
+class CargoInspectionService
+  include Wisper::Publisher
+
+  def cargo_was_handled(tracking_id, last_handling_event)
+    cargo_repository = CargoRepository.new
+    cargo = cargo_repository.find_by_tracking_id(tracking_id)
+    cargo.derive_delivery_progress(last_handling_event)
+    publish(:cargo_is_misdirected, tracking_id) if cargo.delivery.is_misdirected 
+    publish(:cargo_is_unloaded_at_destination, tracking_id) if cargo.delivery.is_unloaded_at_destination
+    cargo_repository.store(cargo)
+  end
+
+  # New methods...
+  def cargo_is_misdirected(tracking_id)
+    puts "Cargo is misdirected - need to reroute it! ", tracking_id.inspect
+  end
+
+  def is_unloaded_at_destination(tracking_id)
+    puts "Cargo has arrived at the destination - notify the customer.", tracking_id.inspect
+  end
+end
+----
+
+[role="vertical"]
+== Some Lessons Learned
+
+=== DDD in a dynamic language is a nice fit, more exploration to be done with value objects & repositories
+
+=== MongoDB provides very natural aggregate modeling & persistence
+
+=== Actor-based model used by Celluloid provides an elegant asynchronous aggregate update mechanism
+
+=== Learning in public
+
+[role="incremental"]
+* https://github.com/paulrayner/ddd_sample_app_ruby - see README for resources
+
+=== Thanks for Expertise
+
+[role="incremental"]
+* https://github.com/cavalle/banksimplistic[BankSimplistic - CQRS on Rails sample app]
+* DDD Sample App - Eric Evans, Peter Backlund, Szymon Pobiega, Patrik Fredriksson
+* Ruby & Rails - Dan Sharp
+* http://www.meetup.com/ddd-denver[DDD Denver]
+
+[role="hide"]
+== Company Logo Page
+
+image:assets/images/vg_logo_square.png[Company Logo]
+
+== Thank You
+
+image:assets/images/business_card.png[Business Card]
